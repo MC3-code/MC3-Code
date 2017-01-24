@@ -1,4 +1,5 @@
 import csv
+import sys
 import numpy as np
 import data_config
 import new_classifiers5
@@ -13,7 +14,7 @@ from collections import Counter
 import mean_combine
 from sklearn.metrics import normalized_mutual_info_score
 
-def main():	
+def main(): 	
 	normalize= True
 	choose_all= True
 	only_top_labels= True
@@ -22,15 +23,31 @@ def main():
 	greedy_find_best = True
         ensemble_methods = False
 
-        skip_line = True
-	binary = False
+	if(sys.argv[3]== "True" or sys.argv[3]== "TRUE"):
+           skip_line = True
+        else:
+	   skip_line = False
+
+	if(sys.argv[2]== "True" or sys.argv[2]== "TRUE"):
+           binary = True
+        else:
+	   binary = False
 
         baseline_needed = False
-        MC3R = False
-        MC3S = True
+
+        if(sys.argv[4]== "True" or sys.argv[4]== "TRUE" ):
+            MC3R = True
+        else:
+            MC3R = False
+
+        if(sys.argv[5]== "True" or sys.argv[5]== "TRUE"):
+            MC3S = True
+        else:
+            MC3S = False
 	
+
 	f = None
-	opener = 'datasets/iris.csv'
+	opener = sys.argv[1]
 	csv_f = None
 	
 	f = open(opener)
@@ -98,9 +115,8 @@ def main():
 	if(baseline_needed == True):
 		baseline2.baseline(TR_set, labels, ensemble_methods, lb, weight, binary)
 	
-	
+	best_strings_first = None
 	if(MC3S):
-                start_time = time.time()
 		classifier_outcomes, best_strings_first = different_expansions_mean_iterations.all(set_holders["TR_full"], TR_set, labels, binary, set_holders["TS"], set_holders["TS_outcome"], training_set3, new_features_only, False, ensemble_methods, weight, lb)
 		roc_score = 0
 		for outcome in classifier_outcomes:
@@ -115,13 +131,13 @@ def main():
 						print roc_score
 						print 'MC3-S'
 	
-		print("--- %s seconds ---" % (time.time() - start_time))
 		
 
 		
 
 	if(MC3R):	
-		start_time = time.time()
+                if(not(MC3S)):
+                   best_classifiers,best_strings_first = different_expansions_mean_iterations.expand_best(TR_set, labels, binary, new_features_only, training_set3, ensemble_methods, lb, weight)
 		classifier_outcomes = keep_expanding_mean_iteration.one_iteration(TR_set,  labels, binary, ensemble_methods, weight, lb, False, False, best_strings_first)
 		start_time_cons = time.time()
 		classifier_outcomes = mean_combine.combine_census(set_holders["TR_full"], classifier_outcomes['TR_set_used'], set_holders["TS"], set_holders["TS_outcome"], classifier_outcomes['best classifiers'], 
@@ -140,6 +156,5 @@ def main():
 						print roc_score
 						print 'MC3-R'
 				
-		print("--- %s seconds ---" % (time.time() - start_time))
 	
 main()
