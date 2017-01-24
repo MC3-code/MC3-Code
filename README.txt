@@ -1,4 +1,4 @@
-The main file used to run the program is regualr run.py.
+The main file used to run the program is regular run.py.
 
 There are 5 command line parameters that must be entered (in this order): location of dataset, binary, skip first line, MC3-R, and MC3-S.
 
