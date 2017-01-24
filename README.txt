@@ -19,3 +19,5 @@ Example:
         What would be typed in the command line: python regular_run.py datasets/iris.csv False True True True
         	This would run both MC3-R and MC3-S algorithms on the iris data set which is multiclass, and the first line is not skipped. 
 
+Returned is the roc-auc-score by the algorithim. 
+The dataset you entered in is randomoly but with an even distribtuin split into test and train sets. The roc-auc-score is given on how the algorithim performed on the test set
